@@ -18,6 +18,7 @@ function getCoin() {
     case "eth":
     case "arca":
     case "att":
+    case "moac":
       url = "https://rinkeby.etherscan.io/tx/";
       break;
     case "btc":
