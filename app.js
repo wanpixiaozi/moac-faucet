@@ -12,7 +12,8 @@ const MOACfaucet = require("./src/moac");
 const assert = require("assert");
 //const tokenList = require("./src/json/token-list.json");
 
-const PORT = process.env.PORT || 55688;
+var myJson = require('./config.json');
+const PORT = myJson.PORT;
 const appName = process.env.APP_NAME || "Moac Faucet";
 
 /***

@@ -1,16 +1,19 @@
 const BigNumber = require("bignumber.js");
 const keythereum = require("keythereum");
 
-var datadir = "D:\\nuwa-vnode1.0.2.win\\moacnode";  //moacnode目录，根据实际修改,改为读取config.json
 
 var Chain3 = require('chain3');
-var chain3 = new Chain3(new Chain3.providers.HttpProvider('http://localhost:8545'));
+var myJson = require('../config.json');
 
-var fromAddress = "0x83D6bCcD4a08082F0a46A73BF3d1e314147eC94E"
-var password = "123456";  // 账号密码，根据实际修改
-var keyObject = keythereum.importFromFile(fromAddress, datadir);
+var vnodeDatadir = myJson.vnodeDatadir; //moacnode目录，根据实际修改
+var vnodeRpcAddr = myJson.vnodeRpcAddr; //vnode rpc addr & port, commonly is "http://localhost:8545"
+var chain3 = new Chain3(new Chain3.providers.HttpProvider(vnodeRpcAddr));
+
+var fromAddress = myJson.fromAddress;
+var password = myJson.password;  // 账号密码，根据实际修改
+var keyObject = keythereum.importFromFile(fromAddress, vnodeDatadir);
 var fromSecret = keythereum.recover(password, keyObject);        //输出私钥
-console.log(fromSecret.toString("hex"));
+//console.log(fromSecret.toString("hex"));
 
 
 const factor = new BigNumber(10).exponentiatedBy(18); // decimal for moac
@@ -57,5 +60,5 @@ module.exports.address = fromAddress;
 
 module.exports.getBalance = async address => {
   const result = await chain3.mc.getBalance(address);
-  return result / factor;
+  return (result / factor).toFixed(2); //保留2位小数
 };
