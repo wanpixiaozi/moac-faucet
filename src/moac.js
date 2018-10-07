@@ -1,65 +1,61 @@
-const bitcore = require("bitcore-lib");
-const ethWallet = require("ethereumjs-wallet");
-const ethTx = require("ethereumjs-tx");
 const BigNumber = require("bignumber.js");
-const Chain3 = require("chain3");
+const keythereum = require("keythereum");
 
-const seed = process.env.SEED || "abcde12345";
+var datadir = "D:\\nuwa-vnode1.0.2.win\\moacnode";  //moacnode目录，根据实际修改,改为读取config.json
 
-// initialize faucet wallet
-const seedValue = Buffer.from(seed);
-const hash = bitcore.crypto.Hash.sha256(seedValue);
-const ethPK = ethWallet.fromPrivateKey(hash);
-const faucetMOACAddress = ethPK.getAddressString();
+var Chain3 = require('chain3');
+var chain3 = new Chain3(new Chain3.providers.HttpProvider('http://localhost:8545'));
 
-// initalize chain3
-const CHAIN_RPC_URL =
-  process.env.ETH_RPC_URL ||
-  "http://ethereum-1784ae1b379243ee.elb.us-east-1.amazonaws.com:8545";
-const chain3 = new Chain3(new Chain3.providers.HttpProvider(CHAIN_RPC_URL));
+var fromAddress = "0x83D6bCcD4a08082F0a46A73BF3d1e314147eC94E"
+var password = "123456";  // 账号密码，根据实际修改
+var keyObject = keythereum.importFromFile(fromAddress, datadir);
+var fromSecret = keythereum.recover(password, keyObject);        //输出私钥
+console.log(fromSecret.toString("hex"));
 
-const factor = new BigNumber(10).exponentiatedBy(18); // decimal for eth
 
-module.exports.sendTx = async (amount, destination) => {
-  try {
-    const value = new BigNumber(amount).multipliedBy(factor);
-    const nonce = await chain3.eth.getTransactionCount(faucetMOACAddress);
-    const gasLimit = new BigNumber(200000);
+const factor = new BigNumber(10).exponentiatedBy(18); // decimal for moac
 
-    const txParams = {
-      nonce: `0x${nonce.toString(16)}`,
-      gasPrice: `0xBA43B7400`,
-      gasLimit: `0x${gasLimit.toString(16)}`,
-      to: destination,
-      value: `0x${value.toString(16)}`,
-      data: `0x0`
-      //  chainId: 4
-    };
+module.exports.sendTx = async (amount, toAddress) => {
+  var mc = chain3.mc;
 
-    const tx = new ethTx(txParams);
-    tx.sign(hash);
-    const serializedTx = tx.serialize().toString("hex");
+  var txcount = chain3.mc.getTransactionCount(fromAddress);
+  console.log("Get tx account", txcount);
 
-    const sendMoac = async serializedTx => {
-      return new Promise(function(resolve, reject) {
-        chain3.eth
-          .sendSignedTransaction("0x" + serializedTx)
-          .once("transactionHash", (e) => {
-            resolve(e); // done
-          });
-      });
-    };
+  var gasPrice = 25000000000;
+  var gasLimit = 100000;
+  var value = chain3.toSha(amount, 'mc');
+  var gasTotal = gasPrice * gasLimit + Number(value);
+  console.log(gasPrice, gasLimit, value, chain3.fromSha(gasTotal, 'mc'));
 
-    return await sendMoac(serializedTx);
-  } catch (err) {
-    console.log(err);
-    return Promise.reject(err);
-  }
+  var rawTx = {
+    from: fromAddress,
+    to: toAddress,
+    nonce: chain3.intToHex(txcount),
+    gasPrice: chain3.intToHex(gasPrice),
+    gasLimit: chain3.intToHex(gasLimit),
+    value: chain3.intToHex(value),
+    shardingFlag: 0,
+    chainId: chain3.version.network
+  };
+
+  var signedTx = chain3.signTransaction(rawTx, fromSecret);
+
+  const sendMoac = async signedTx => {
+    chain3.mc.sendRawTransaction(signedTx, function (err, hash) {
+      if (!err) {
+        console.log("succeed: ", hash);
+      } else {
+        console.log("error:", err.message);
+      }
+    });
+  };
+
+  return await sendMoac(signedTx);
 };
 
-module.exports.address = faucetMOACAddress;
+module.exports.address = fromAddress;
 
 module.exports.getBalance = async address => {
-  const result = await chain3.eth.getBalance(address);
+  const result = await chain3.mc.getBalance(address);
   return result / factor;
 };
