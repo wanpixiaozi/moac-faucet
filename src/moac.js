@@ -62,3 +62,8 @@ module.exports.getBalance = async address => {
   const result = await chain3.mc.getBalance(address);
   return (result / factor).toFixed(2); //保留2位小数
 };
+
+module.exports.verifyAccount = address => {
+  const result = chain3.isAddress(address);
+  return result;
+};

@@ -29,6 +29,10 @@ const faucetTrigger = {
   MOAC: MOACfaucet.sendTx
 };
 
+const faucetAccountVerify = {
+  MOAC: MOACfaucet.verifyAccount
+};
+
 /*
 const maxSend = {
   BTC: process.env.MAX_BTC || 0.02,
@@ -121,7 +125,16 @@ app.post("/api/getcoin", async (req, res) => {
       amount <= maxSend[coin],
       `Amount must be lower than ${coin} max amount ${maxSend[coin]}`
     );
+    assert(
+        amount > 0,
+        `Amount must be positive`
+    );
     let result;
+    result = faucetAccountVerify[coin](dest);
+    assert(
+        result,
+        `Address is invalid`
+    );
     /**
     if (tokenList[coin]) {
       // if it's ERC20
