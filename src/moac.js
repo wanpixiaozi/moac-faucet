@@ -24,7 +24,7 @@ module.exports.sendTx = async (amount, toAddress) => {
   var txcount = chain3.mc.getTransactionCount(fromAddress);
   console.log("Get tx account", txcount);
 
-  var gasPrice = 25000000000;
+  var gasPrice = 29000000000;
   var gasLimit = 100000;
   var value = chain3.toSha(amount, 'mc');
   var gasTotal = gasPrice * gasLimit + Number(value);
@@ -43,6 +43,7 @@ module.exports.sendTx = async (amount, toAddress) => {
 
   var signedTx = chain3.signTransaction(rawTx, fromSecret);
 
+  /** traditional use
   const sendMoac = async signedTx => {
     chain3.mc.sendRawTransaction(signedTx, function (err, hash) {
       if (!err) {
@@ -50,6 +51,28 @@ module.exports.sendTx = async (amount, toAddress) => {
       } else {
         console.log("error:", err.message);
       }
+    });
+  };  **/
+
+  const sendMoac = async signedTx => {
+    return new Promise(function(resolve, reject) {
+      chain3.mc.sendRawTransaction(signedTx, function (err, hash) {
+        if (!err) {
+          console.log("succeed: ", hash);
+          resolve(hash);
+          return hash;
+        } else {
+          console.log("error:", err.message);
+          reject(err);
+          return err.message;
+        }
+      });
+    /*});/*.then(function(hash) {
+      console.log('promise got hash' + hash);
+      return hash;*/
+    }).catch(err => {
+      console.log("catch error " + err);
+        //reject(err);
     });
   };
 

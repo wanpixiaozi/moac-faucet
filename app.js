@@ -104,6 +104,7 @@ app.get("/api/getbalance/:coin", async (req, res) => {
     }
      **/
     result = await getBalance[coin](addresses[coin]);
+    console.log('get balance result is '+result);
     res.status(200).json(result);
   } catch (err) {
     console.error(err);
@@ -129,21 +130,15 @@ app.post("/api/getcoin", async (req, res) => {
         amount > 0,
         `Amount must be positive`
     );
-    let result;
-    result = faucetAccountVerify[coin](dest);
+    let accStatus;
+    accStatus = faucetAccountVerify[coin](dest);
     assert(
-        result,
+        accStatus,
         `Address is invalid`
     );
-    /**
-    if (tokenList[coin]) {
-      // if it's ERC20
-      result = await faucetTrigger["ERC20"](amount, dest, coin);
-    } else {
-      result = await faucetTrigger[coin](amount, dest);
-    }
-    **/
+
     result = await faucetTrigger[coin](amount, dest);
+    console.log("faucetTrigger result is " + result);
     res.status(200).json(result);
   } catch (err) {
     console.log("Error:", err);
