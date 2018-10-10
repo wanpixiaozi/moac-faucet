@@ -15,12 +15,9 @@ var keyObject = keythereum.importFromFile(fromAddress, vnodeDatadir);
 var fromSecret = keythereum.recover(password, keyObject);        //输出私钥
 //console.log(fromSecret.toString("hex"));
 
-
 const factor = new BigNumber(10).exponentiatedBy(18); // decimal for moac
 
 module.exports.sendTx = async (amount, toAddress) => {
-  var mc = chain3.mc;
-
   var txcount = chain3.mc.getTransactionCount(fromAddress);
   console.log("Get tx account", txcount);
 
@@ -86,6 +83,5 @@ module.exports.getBalance = async address => {
 };
 
 module.exports.verifyAccount = address => {
-  const result = chain3.isAddress(address);
-  return result;
+  return chain3.isAddress(address);
 };
