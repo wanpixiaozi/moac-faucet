@@ -26,6 +26,15 @@
       <%= appName || 'Moac Faucet' %>
     </h1>
     <p>by Cai Zhenglong</p>
+    <p>
+      If you have any questions or found issues, pls submit at
+      <a
+              target="_new"
+              href="https://github.com/wanpixiaozi/moac-faucet/issues"
+      >
+        github
+      </a>
+    </p>
   </div>
   <div class="container">
     <div class="row">
@@ -34,7 +43,7 @@
           <b>Welcome to
             <%= appName || 'Moac Faucet' %>
               !</b>
-          <br/> Please use these testnet coins sparingly, and remember to send them back to these addresses when you're done:
+          <br/> Please use these testnet coins sparingly, and remember to send them back to the address below when you've done:
         </p>
         <p>
           <% Object.keys(addresses).forEach(key => { %>
