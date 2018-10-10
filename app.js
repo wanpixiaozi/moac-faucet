@@ -44,8 +44,9 @@ const maxSend = {
   ATT: process.env.MAX_ATT || 1000
 };
 */
+
 const maxSend = {
-  MOAC: process.env.MAX_MOAC || 10
+  MOAC: myJson.maxSend
 };
 
 /*
@@ -138,7 +139,7 @@ app.post("/api/getcoin", async (req, res) => {
     );
 
     result = await faucetTrigger[coin](amount, dest);
-    console.log("faucetTrigger result is " + result);
+    //console.log("faucetTrigger result is " + result);
     res.status(200).json(result);
   } catch (err) {
     console.log("Error:", err);
