@@ -2,6 +2,7 @@
 
 An Moac faucet with a express frontend. Works on any network you configure (and fund the faucet account of course).
 
+* v1.1.3 Update wording.
 * v1.1.2 Remove useless code.
 * v1.1.0 Add sendto account validation and amount positive check, show hash after send coins.
   Show trans hash at screen when done.
