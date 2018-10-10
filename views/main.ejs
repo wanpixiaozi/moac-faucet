@@ -45,24 +45,15 @@
               <br/>
               <% }); %>
         </p>
-        <p>
-          <b>Current balances: </b>
-        </p>
         <p id="balances">
+          <b>Current balances: </b>
           <% Object.keys(addresses).forEach(key => { %>
-            <b>
-              <%= key %>:
-            </b>
             <span id="<%= key %>">Loading... </span>
             <% }); %>
         </p>
         <p>
           <b>Max amount per transaction: </b>
-        </p>
-        <p>
           <% Object.keys(maxSend).forEach(key => { %>
-            <b>
-              <%= key %>:</b>
             <%= maxSend[key] %>
               <% }); %>
         </p>
