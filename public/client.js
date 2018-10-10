@@ -12,14 +12,16 @@ function getCoin() {
   const resultHTML = `<div class="col-sm-12 alert alert-info"><b>Processing...</b></div>`;
   resultElement.innerHTML = resultHTML;
 
-  let url = "";
+  //var myJson = require('../config.json');
 
+  //var url = myJson.testnetExplorerUrl; //testnet explorer url，根据实际修改
+/***
   switch (coin) {
     case "eth":
     case "arca":
     case "att":
     case "moac":
-      url = "https://rinkeby.etherscan.io/tx/";
+      url = testnetExplorerUrl;
       break;
     case "btc":
       url = "https://testnet.blockchain.info/tx/";
@@ -31,6 +33,8 @@ function getCoin() {
       url = "https://neoscan-testnet.io/transaction/";
       break;
   }
+ ***/
+  url = "http://testnet.moac.io:3000/tx/"; //need to read from config.json TODO
 
   axios
     .post("/api/getcoin/", {
