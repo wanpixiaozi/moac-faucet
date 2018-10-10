@@ -24,7 +24,7 @@ module.exports.sendTx = async (amount, toAddress) => {
   var txcount = chain3.mc.getTransactionCount(fromAddress);
   console.log("Get tx account", txcount);
 
-  var gasPrice = 29000000000;
+  var gasPrice = 25000000000;
   var gasLimit = 100000;
   var value = chain3.toSha(amount, 'mc');
   var gasTotal = gasPrice * gasLimit + Number(value);
@@ -62,17 +62,12 @@ module.exports.sendTx = async (amount, toAddress) => {
           resolve(hash);
           return hash;
         } else {
-          console.log("error:", err.message);
-          reject(err);
-          return err.message;
+          console.log("error found:", err.message);
+          return reject(err);
         }
       });
-    /*});/*.then(function(hash) {
-      console.log('promise got hash' + hash);
-      return hash;*/
     }).catch(err => {
-      console.log("catch error " + err);
-        //reject(err);
+      return Promise.reject(err);
     });
   };
 
