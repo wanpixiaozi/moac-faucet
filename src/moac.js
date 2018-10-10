@@ -25,10 +25,14 @@ module.exports.sendTx = async (amount, toAddress) => {
   console.log("Get tx account", txcount);
 
   var gasPrice = 25000000000;
+  if (gasPrice < chain3.mc.gasPrice * 1.1) {
+    gasPrice = chain3.mc.gasPrice * 1.1; //最小设定为gasPrice的1.1倍
+  }
   var gasLimit = 100000;
   var value = chain3.toSha(amount, 'mc');
   var gasTotal = gasPrice * gasLimit + Number(value);
   console.log(gasPrice, gasLimit, value, chain3.fromSha(gasTotal, 'mc'));
+
 
   var rawTx = {
     from: fromAddress,
