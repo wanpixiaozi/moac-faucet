@@ -37,6 +37,8 @@ Start your faucet:
 ```
 node app.js
 ```
+## Explorer support
+google & firefox are supported, Internet Explorer is not supported
 
 ## HTTP Return / error codes
 
